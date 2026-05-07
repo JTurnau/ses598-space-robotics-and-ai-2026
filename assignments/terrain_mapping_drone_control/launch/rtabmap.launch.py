@@ -9,7 +9,7 @@ def generate_launch_description():
         # Launch arguments
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='true',
+            default_value='false',
             description='Use simulation time'
         ),
 
@@ -30,6 +30,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'approx_sync': True,
                 
                 # RTAB-Map parameters
                 'frame_id': 'base_link',
@@ -45,7 +46,7 @@ def generate_launch_description():
                 'odom_tf_linear_variance': 0.001,
                 
                 # Visual odometry parameters
-                'visual_odometry': False,  # Using PX4 odometry instead
+                'visual_odometry': True,  # Using PX4 odometry instead
                 
                 # Mapping parameters
                 'grid_cell_size': 0.05,
@@ -65,9 +66,9 @@ def generate_launch_description():
             }],
             remappings=[
                 # Camera topics
-                ('rgb/image', '/camera/rgb/image_raw'),
-                ('depth/image', '/camera/depth/image_raw'),
-                ('rgb/camera_info', '/camera/rgb/camera_info'),
+                ('rgb/image', '/drone/front_rgb'),
+                ('depth/image', '/drone/front_depth'),
+                ('rgb/camera_info', '/drone/front_rgb/camera_info'),
                 
                 # Odometry from PX4
                 ('odom', '/fmu/out/vehicle_odometry'),
@@ -93,8 +94,10 @@ def generate_launch_description():
                 'min_depth': 0.4
             }],
             remappings=[
-                ('depth/image', '/camera/depth/image_raw'),
-                ('depth/camera_info', '/camera/depth/camera_info'),
+                ('depth/image', '/drone/front_depth'),
+                ('rgb/image', '/drone/front_rgb'),
+                ('rgb/camera_info', '/drone/front_depth/camera_info'),
+                ('depth/camera_info', '/drone/front_depth/camera_info'),
                 ('cloud', 'cloud_xyz')
             ]
         ),
